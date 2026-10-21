@@ -259,6 +259,9 @@ else:
             st.error(message)
         else:
             st.session_state['prep'] = prep
+            # 進捗バーの分だけ画面の並びがずれると、次の操作で画像選択欄が閉じてしまうため、
+            # 確認が終わったら画面を描き直して以降の並びを揃える
+            st.rerun()
 
     prep = st.session_state.get('prep')
     if prep:
