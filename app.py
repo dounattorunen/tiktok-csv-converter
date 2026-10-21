@@ -205,9 +205,16 @@ def render_image_selector(prep):
         if not chosen:
             empty.append(code)
 
-        mark = " ⚠️ 9枚超過" if len(chosen) > MAX_IMAGES else (" ⚠️ 未選択" if not chosen else "")
-        title = f"{code}　{prep['names'].get(code, '')}　— 選択 {len(chosen)} / {len(images)} 枚{mark}"
-        with st.expander(title, expanded=bool(mark)):
+        # 見出し・開閉の初期値は固定にする（変わると開いていた欄が閉じてしまうため）
+        title = f"{code}　{prep['names'].get(code, '')}（画像 {len(images)} 枚）"
+        with st.expander(title, expanded=False):
+            count_text = f"選択中：{len(chosen)} / {MAX_IMAGES} 枚"
+            if len(chosen) > MAX_IMAGES:
+                st.error(f"{count_text}　⚠️ {MAX_IMAGES}枚を超えています")
+            elif not chosen:
+                st.error(f"{count_text}　⚠️ 1枚も選択されていません")
+            else:
+                st.info(count_text)
             for row_start in range(0, len(images), THUMBS_PER_ROW):
                 cols = st.columns(THUMBS_PER_ROW)
                 for col, (num, url) in zip(cols, images[row_start:row_start + THUMBS_PER_ROW]):
